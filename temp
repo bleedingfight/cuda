@@ -1,0 +1,8 @@
+TensorRT和Tritonserver如何结合？对于一个模型我做过这样的事：tf训练模型-->frozen pb->转换为uff->重写不支持插件->验证在tensorrt可以序列化为engine，在triton中直接载入plugin的so执行出错。Serialization Error in readExternam:0 (Type mismatch)
+使用trtexec能load engine能代码次模型能在triton上使用吗？又什么最佳流程实现对plugin功能的正确检查？
+tftrt是tensorrt的子集吗？如果我们使用tftrt转化后，模型在tritonserver下我们应该还是使用graphdef还是plan？后端计算的时候究竟是用的tensorflow还是tensorflow和tensorrt？在我们实际使用过程中
+使用tftrt（graphdef）经常会导致oom
+
+
+
+导出的onnx的时候经常提示说onnx支持int64，但是现在转化为了int32的之类的警告。

@@ -1,0 +1,46 @@
+#include "customGeluPlugin. h"
+#include "NvInfer. h"
+#include "geluKernel. h"
+2020
+2020-0818
+ #include <vector>
+135447的
+ #include <cassert>
+屏载
+ #include <cstring>
+ CLlonPro e
+ berictimark
+ using namespace nvinfer1;
+ / Gelu plugin specific constants
+ namespace
+ static const char* GELU_PLUGIN_ VERSION "1"} gappl
+ a.db
+ static const char* GELU_PLUGIN_NAME"CustomGeluPlugin"};
+ install. sh
+ / Static class fields initialization
+ PluginFieldcollection Geluplugincr:mfc;
+ createsql
+std:: vector<PluginField> Geluplugincre: mPluginAttributes;
+ / Helper function for serializing plugin
+ Biom
+ template<typename T>
+ void writeToBuffer(char*& buffer, const T& val)nohup.out
+{
+ *reinterpret_cast<*>(buffer) val;
+ buffer + sizeof(T);
+ }Python
+ jetbrains
+/辅助插件序列化函数
+ templatestypename T>
+ T readFromBuffer(const char*& buffer)
+{
+ T val *reinterpret_cast<const T*>(buffer ) reset
+ buffer+= sizeof(t)
+ Jetbrains
+ return val; vnzip
+ eval mac
+/插件构造函数,根据构造函数的名称构造插件
+ Geluplugin:: GeluPlugin(const std:: string name
+: mLayerName(name)
+ encrypt
+ mariadt
