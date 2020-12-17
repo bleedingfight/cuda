@@ -1,0 +1,45 @@
+version: '2.3' # for runtime
+
+networks:
+  biomind-gtools-network:
+    driver_opts:
+      com.docker.network.bridge.name: "gtool0"
+
+services:
+  graphtoolsenv:
+    image: nvcr.io/nvidia/tritonserver
+    build:
+      context: dockerfiles
+      dockerfile: Dockerfile
+    # -- Uncomment below if server has GPU
+    runtime: nvidia
+    networks:
+      - tritton_network
+    ports:
+      - 9000:9000
+      - 9001:9001
+      - 9002:9002
+    volumes:
+      - ./:/custom_plugin
+      - /tmp/mnist_models:/mnist_models
+    shm_size: 1g
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    command: bash -c '
+        REPOSITORY=./data/server/model-repository &&
+        pushd /mnist_models &&
+          mkdir -p ./data/server/model-repository &&
+              (bash -c "
+            trtserver 
+              --model-repository ./data/server/model-repository
+              --allow-poll-model-repository true
+              --http-port 8100
+              --exit-on-error false
+              --log-verbose 2
+              --log-error 1 &
+            " &)
+              &&
+        popd &&
+        bash -c "while sleep 1000; do :; done"
+      '

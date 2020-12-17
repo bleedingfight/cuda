@@ -1,0 +1,57 @@
+# We need cmake >= 3.8, since 3.8 introduced CUDA as a first class language
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+project(ClipPlugin LANGUAGES CXX CUDA)
+
+# Enable all compile warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -Wno-deprecated-declarations")
+
+# Sets variable to a value if variable is unset.
+macro(set_ifndef var val)
+    if (NOT ${var})
+        set(${var} ${val})
+    endif()
+    message(STATUS "Configurable variable ${var} set to ${${var}}")
+endmacro()
+
+# -------- CONFIGURATION --------
+set_ifndef(TRT_LIB /usr/local/TensorRT-7.1.3.4)
+set_ifndef(TRT_INCLUDE /usr/local/TensorRT-7.1.3.4/targets/x86_64-linux-gnu/include)
+
+# Find dependencies:
+message("\nThe following variables are derived from the values of the previous variables unless provided explicitly:\n")
+
+# TensorRT's nvinfer lib
+find_library(_NVINFER_LIB nvinfer HINTS ${TRT_LIB} PATH_SUFFIXES lib lib64)
+set_ifndef(NVINFER_LIB ${_NVINFER_LIB})
+
+# -------- BUILDING --------
+
+# Add include directories
+include_directories(${CUDA_INC_DIR} ${TRT_INCLUDE} /usr/local/cuda-10.2/targets/x86_64-linux/include/thrust/system/cuda/detail ${CMAKE_SOURCE_DIR}/plugin/)
+
+# Define clip plugin library target
+add_library(geluplugin MODULE
+  ${CMAKE_SOURCE_DIR}/plugin/geluKernel.cu
+  ${CMAKE_SOURCE_DIR}/plugin/customGeluPlugin.cpp
+  ${CMAKE_SOURCE_DIR}/plugin/geluKernel.h
+  ${CMAKE_SOURCE_DIR}/plugin/customGeluPlugin.h
+)
+# add_library(geluplugin MODULE
+#   ${CMAKE_SOURCE_DIR}/plugin/geluKernel.cu
+#   ${CMAKE_SOURCE_DIR}/plugin/customClipPlugin.cpp
+#   ${CMAKE_SOURCE_DIR}/plugin/geluPlugin.h
+# )
+
+
+# Use C++11
+target_compile_features(geluplugin PUBLIC cxx_std_11)
+
+# Link TensorRT's nvinfer lib
+target_link_libraries(geluplugin PRIVATE ${NVINFER_LIB})
+
+# We need to explicitly state that we need all CUDA files
+# to be built with -dc as the member functions will be called by
+# other libraries and executables (in our case, Python inference scripts)
+set_target_properties(geluplugin PROPERTIES
+  CUDA_SEPARABLE_COMPILATION ON
+)
