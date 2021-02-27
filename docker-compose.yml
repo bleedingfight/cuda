@@ -1,20 +1,17 @@
 version: '2.3' # for runtime
 
 networks:
-  biomind-gtools-network:
+  cuda-ubuntu20-dev-network:
     driver_opts:
-      com.docker.network.bridge.name: "gtool0"
+      com.docker.network.bridge.name: "cuda-dev"
 
 services:
-  graphtoolsenv:
-    image: nvcr.io/nvidia/tritonserver
+  cuda-ubuntu20-env:
+    image: cuda:11.1.1-devel-ubuntu20.04
     build:
       context: dockerfiles
       dockerfile: Dockerfile
-    # -- Uncomment below if server has GPU
     runtime: nvidia
-    networks:
-      - tritton_network
     ports:
       - 9000:9000
       - 9001:9001
@@ -30,16 +27,6 @@ services:
         REPOSITORY=./data/server/model-repository &&
         pushd /mnist_models &&
           mkdir -p ./data/server/model-repository &&
-              (bash -c "
-            trtserver 
-              --model-repository ./data/server/model-repository
-              --allow-poll-model-repository true
-              --http-port 8100
-              --exit-on-error false
-              --log-verbose 2
-              --log-error 1 &
-            " &)
-              &&
-        popd &&
+            popd &&
         bash -c "while sleep 1000; do :; done"
       '

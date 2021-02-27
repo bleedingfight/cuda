@@ -1,5 +1,4 @@
 import tensorrt as trt
-import tensorrt as trt
 import pycuda.driver as cuda
 import numpy as np
 import pycuda.autoinit
@@ -15,7 +14,7 @@ def allocate_buffers(engine, batch_size, data_type):
       engine : The path to the TensorRT engine. 
       batch_size : The batch size for execution time.
       data_type: The type of the data for input and output, for example trt.float32. 
-   
+
    Output:
       h_input_1: Input in the host.
       d_input_1: Input in the device. 
@@ -61,7 +60,7 @@ def do_inference(engine, pics_1, h_input_1, d_input_1, h_output, d_output,
       batch_size : Batch size for execution time
       height: Height of the output image
       width: Width of the output image
-   
+
    Output:
       The list of output images
 

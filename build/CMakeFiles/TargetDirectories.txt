@@ -1,0 +1,3 @@
+/home/liushuai/cuda/build/CMakeFiles/rebuild_cache.dir
+/home/liushuai/cuda/build/CMakeFiles/geluplugin.dir
+/home/liushuai/cuda/build/CMakeFiles/edit_cache.dir
