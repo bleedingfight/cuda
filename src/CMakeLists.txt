@@ -1,0 +1,6 @@
+include_directories(${CMAKE_SOURCE_DIR}/include)
+file(GLOB CUDA_SRC ${CMAKE_SOURCE_DIR}/src/*.cu)
+file(GLOB CPP_SRC ${CMAKE_SOURCE_DIR}/src/*.cpp)
+message(STATUS "==>${CPP_SRC}")
+add_library(utils ${CUDA_SRC})
+add_Library(tools ${CPP_SRC})
