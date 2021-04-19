@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include "utils.h"
 #include "common.h"
+__global__ void NullKernel(){
+
+}
 int main() {
     const int dev = 0;
     showDevice(dev);

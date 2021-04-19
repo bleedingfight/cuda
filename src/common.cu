@@ -16,7 +16,7 @@ void showDevice(const int devID) {
          (runtimeVersion % 100) / 10);
   printf("  Total amount of global memory:                 %.2f GBytes (%llu "
          "bytes)\n",
-         (float)deviceProp.totalGlobalMem / pow(1024.0, 3),
+         static_cast<float>(deviceProp.totalGlobalMem) / pow(1024.0, 3),
          (unsigned long long)deviceProp.totalGlobalMem);
   printf("  GPU Clock rate:                                %.0f MHz (%0.2f "
          "GHz)\n",
@@ -61,8 +61,5 @@ void showDevice(const int devID) {
          deviceProp.maxGridSize[2]);
   printf("  Maximum memory pitch:                          %lu bytes\n",
          deviceProp.memPitch);
-  int *minStreamPri=nullptr, *maxStringPri=nullptr;
-  cudaError_t cudaDeviceGetStreamPriorityRange(minStreamPri,maxStringPri);
-
   exit(EXIT_SUCCESS);
 }
