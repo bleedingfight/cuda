@@ -61,8 +61,6 @@ void showDevice(const int devID) {
          deviceProp.maxGridSize[2]);
   printf("  Maximum memory pitch:                          %lu bytes\n",
          deviceProp.memPitch);
-  int *minStreamPri=nullptr, *maxStringPri=nullptr;
-  cudaError_t cudaDeviceGetStreamPriorityRange(minStreamPri,maxStringPri);
 
   exit(EXIT_SUCCESS);
 }
