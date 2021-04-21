@@ -1,7 +1,9 @@
 # We need cmake >= 3.8, since 3.8 introduced CUDA as a first class language
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(ClipPlugin LANGUAGES CXX CUDA)
-
+set(CMAKE_CUDA_ARCHITECTURES 52 80)
+include(cmake/FindCUDA.cmake)
+include(cmake/modules/TensorRT.cmake)
 # Enable all compile warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -Wno-deprecated-declarations")
 
@@ -14,8 +16,8 @@ macro(set_ifndef var val)
 endmacro()
 
 # -------- CONFIGURATION --------
-set_ifndef(TRT_LIB /usr/local/TensorRT-7.1.3.4)
-set_ifndef(TRT_INCLUDE /usr/local/TensorRT-7.1.3.4/targets/x86_64-linux-gnu/include)
+set_ifndef(TRT_LIB /usr/local/TensorRT-7.2.3.4)
+set_ifndef(TRT_INCLUDE /usr/local/TensorRT-7.2.3.4/targets/x86_64-linux-gnu/include)
 
 # Find dependencies:
 message("\nThe following variables are derived from the values of the previous variables unless provided explicitly:\n")
@@ -27,7 +29,7 @@ set_ifndef(NVINFER_LIB ${_NVINFER_LIB})
 # -------- BUILDING --------
 
 # Add include directories
-include_directories(${CUDA_INC_DIR} ${TRT_INCLUDE} /usr/local/cuda-10.2/targets/x86_64-linux/include/thrust/system/cuda/detail ${CMAKE_SOURCE_DIR}/plugin/)
+include_directories(${CUDA_INC_DIR} ${TRT_INCLUDE} ${CMAKE_SOURCE_DIR}/plugin/)
 
 # Define clip plugin library target
 add_library(geluplugin MODULE
