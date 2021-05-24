@@ -50,6 +50,7 @@
 import tensorflow as tf
 import numpy as np
 import os
+from os.path import exists
 from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 from functools import partial
 import datetime
@@ -75,7 +76,7 @@ def build_model():
     return model
 
 
-def train_model():
+def train_model(model_name, logs_path='/tmp/mnist_summary/'):
     # Build and compile model
     model = build_model()
     model.compile(optimizer='adam',
@@ -85,26 +86,24 @@ def train_model():
     # Load data
     x_train, y_train, x_test, y_test = load_data()
     callback = tf.keras.callbacks.TensorBoard(
-        log_dir="/tmp/mnist_summary/{}".format(
-            datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")))
-    # Train the model on the data
-    model.fit(x_train,
-              y_train,
-              epochs=10,
-              validation_data=(x_test, y_test),
-              verbose=1,
-              callbacks=[callback])
+        log_dir="{}_{}".format(logs_path,
+                               datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")))
+    if not exists(model_name):
+        # Train the model on the data
+        model.fit(x_train,
+                  y_train,
+                  epochs=10,
+                  validation_data=(x_test, y_test),
+                  verbose=1,
+                  callbacks=[callback])
 
-    # Evaluate the model on test data
+        # Evaluate the model on test data
+        model.save(model_name, datetime.datetime.now().strftime)
+    model = tf.keras.models.load_model(model_name)
     test_loss, test_acc = model.evaluate(x_test, y_test)
     print("Test loss: {}\nTest accuracy: {}".format(test_loss, test_acc))
 
     return model
-
-
-def maybe_mkdir(dir_path):
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
 
 
 def save_model(model, pb_file='models'):
@@ -119,15 +118,7 @@ def save_model(model, pb_file='models'):
     frozen_func.graph.as_graph_def()
 
     layers = [op.name for op in frozen_func.graph.get_operations()]
-    print("-" * 50)
-    print("Frozen model layers: ")
     for layer in layers:
-        print("-" * 50)
-        print("Frozen model inputs: ")
-        print(frozen_func.inputs)
-        print("Frozen model outputs: ")
-        print(frozen_func.outputs)
-
         # Save frozen graph from frozen ConcreteFunction to hard drive
         tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
                           logdir=pb_file,
@@ -136,5 +127,5 @@ def save_model(model, pb_file='models'):
 
 
 if __name__ == "__main__":
-    model = train_model()
+    model = train_model('/tmp/mnist/model.h5')
     save_model(model)

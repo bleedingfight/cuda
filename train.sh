@@ -35,7 +35,7 @@ rm -rf build
 rm -rf models
 
 message "training_model"
-python model.py
+python python/model.py
 if [ -f $engine_file ];then
         rm ${engine_file}
 fi

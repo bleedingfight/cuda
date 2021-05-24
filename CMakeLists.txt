@@ -16,8 +16,8 @@ macro(set_ifndef var val)
 endmacro()
 
 # -------- CONFIGURATION --------
-set_ifndef(TRT_LIB /usr/local/TensorRT-7.2.3.4)
-set_ifndef(TRT_INCLUDE /usr/local/TensorRT-7.2.3.4/targets/x86_64-linux-gnu/include)
+set_ifndef(TRT_LIB /usr/local/TensorRT-7.2.0.14/include)
+set_ifndef(TRT_INCLUDE /usr/local/TensorRT-7.2.0.14/targets/x86_64-linux-gnu/include)
 
 # Find dependencies:
 message("\nThe following variables are derived from the values of the previous variables unless provided explicitly:\n")
