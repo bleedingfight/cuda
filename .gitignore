@@ -1,4 +1,5 @@
 temp/*
+python/__pycache__
 *.plan
 *.pb
 */saved_model

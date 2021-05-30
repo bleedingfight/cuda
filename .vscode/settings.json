@@ -1,6 +1,6 @@
 {
     "python.pythonPath": "/home/liushuai/miniconda3/bin/python",
     "python.autoComplete.extraPaths": [
-        "/home/liushuai/miniconda3/lib/python3.7/site-packages/"
+        "/home/liushuai/miniconda3/lib/python3.8/site-packages/"
     ]
 }
