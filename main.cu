@@ -66,6 +66,7 @@ int main (void){
         printf ("\n");
     }
     free(a);
+    
     return EXIT_SUCCESS;
 }
 

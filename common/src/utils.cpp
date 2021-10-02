@@ -1,4 +1,3 @@
-
 #include "utils.h"
 void initData(float *f, int size, float value) {
   for (int i = 0; i < size; i++)

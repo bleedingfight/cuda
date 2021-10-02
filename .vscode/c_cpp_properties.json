@@ -4,9 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "/usr/local/cuda-11.1/targets/x86_64-linux/include",
-                "/usr/local/cuda-11.1/targets/x86_64-linux/include/thrust",
-                "/usr/local/TensorRT-7.2.3.4/include"
+                "/opt/cuda/targets/x86_64-linux/include/",
+                "/opt/cuda/targets/x86_64-linux/include/thrust/",
+                "/usr/local/TensorRT-8.0.1.6/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
