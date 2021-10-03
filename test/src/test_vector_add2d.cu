@@ -1,15 +1,9 @@
+#include "inplaceOp.h"
+#include <gtest/gtest.h>
 #include <iostream>
 #include <math.h>
-
-// CUDA kernel to add elements of two arrays
-__global__ void add(int n, float *x, float *y) {
-  int index = blockIdx.x * blockDim.x + threadIdx.x;
-  int stride = blockDim.x * gridDim.x;
-  for (int i = index; i < n; i += stride)
-    y[i] = x[i] + y[i];
-}
-
-int main(void) {
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
   int N = 1 << 20;
   float *x, *y;
 
@@ -35,11 +29,11 @@ int main(void) {
   float maxError = 0.0f;
   for (int i = 0; i < N; i++)
     maxError = fmax(maxError, fabs(y[i] - 3.0f));
-  std::cout << "Max error: " << maxError << std::endl;
-
+  EXPECT_EQ(maxError, 0);
   // Free memory
   cudaFree(x);
   cudaFree(y);
+  return RUN_ALL_TESTS();
 
   return 0;
 }
