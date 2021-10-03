@@ -37,18 +37,6 @@ macro(CHECK_DIR_HAS_CMAKELIST hascmakelist targetdir)
     endif()
 endmacro()
 
-
-# MACRO(SUBDIRLIST result curdir)
-#     FILE（GLOB children RELATIVE ${curdir} ${curdir}/*）
-#     SET(dirlist "")
-#     FOREACH（child ${children}）
-#         IF（IS_DIRECTORY ${curdir} / ${child}）
-#         LIST（APPEND dirlist ${child} ）
-#         ENDIF（）
-#     ENDFOREACH（）
-#     SET（${result} ${dirlist}）
-# ENDMACRO()
-
 # 查找根目录下包含CMakeLists.txt文件的子目录
 macro(ALL_HEAD_PATH sub_module_name rootpath)
     # message(STATUS "== ${sub_module_name} ${rootpath}")
@@ -86,3 +74,45 @@ macro(INCLUDE_HEAD_ALL all_paths sub_module_name)
     endforeach()
     list(REMOVE_DUPLICATES all_paths)
 endmacro()
+
+# 获取workspace下的子模块(包含有CMakeLists.txt的目录)
+macro(PROJECT_SUBMODULES submodule workspace)
+  ALL_HEAD_PATH(sub_module_name ${workspace})
+  list(REMOVE_DUPLICATES sub_module_name)
+  foreach(module ${sub_module_name})
+      get_filename_component(abs_path ${module} REALPATH BASE_DIR ${CMAKE_SOURCE_DIR})
+      include_directories(${abs_path}/include)
+  endforeach()
+endmacro()
+
+# 通过文件名称创建测试用例
+function(CREATE_TEST_CASE)
+
+if(${ARGC} EQUAL 1)
+    set(test_name ${ARGV0})
+    set(tests_path "${CMAKE_SOURCE_DIR}/test")
+    message(STATUS "Current params only one,so test path use default: ${tests_path}")
+elseif(${ARGC} EQUAL 2)
+    set(test_name ${ARGV0})
+    set(tests_path "${ARGV1}")
+else()
+   message(FATAL_ERROR "Function param nums must be 1 or 2")
+endif()
+message("Test case:${test_name} test path:${tests_path}")
+if(NOT IS_DIRECTORY ${tests_path})
+    message(FATAL_ERROR "${tests_path} not exist!")
+else()
+    message(STATUS "==> ${tests_path}/src/${test_name}.cu")
+    if(EXISTS ${tests_path}/src/${test_name}.cu)
+        add_executable(${test_name} ${tests_path}/src/test_vector_add.cu)
+        target_link_libraries(${test_name} GTest::gtest GTest::gtest_main pthread)
+        add_test(NAME ${test_name} COMMAND ${test_name})
+    elseif(EXISTS ${tests_path}/src/${test_name}.cc)
+        add_executable(${test_name} ${tests_path}/src/test_vector_add.cu)
+        target_link_libraries(${test_name} GTest::gtest GTest::gtest_main pthread)
+        add_test(NAME ${test_name} COMMAND ${test_name})
+    else() 
+        message(FATAL_ERROR "Can't find ${test_name} source")
+    endif()
+endif()
+endfunction()
